@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 
 class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 {
@@ -34,10 +33,6 @@ class CancelOrRefundProcessor extends Processor implements ProcessorInterface
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::CANCEL_OR_REFUND,
-            'originalState' => $state
-        ];
 
         if ($this->notification->isSuccess() && isset($this->notification->additionalData[self::MODIFICATION_ACTION])) {
             if ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::CANCEL) {
@@ -48,10 +43,6 @@ class CancelOrRefundProcessor extends Processor implements ProcessorInterface
                 $state = $refundProcessor->process();
             }
         }
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::CANCEL_OR_REFUND . ' notification.', $logContext);
 
         return $state;
     }
