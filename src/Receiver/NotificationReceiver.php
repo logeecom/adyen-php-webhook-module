@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 /**
  *                       ######
  *                       ######
@@ -89,16 +88,8 @@ class NotificationReceiver
             }
             return false;
         }
-
-        $username = $_SERVER['PHP_AUTH_USER'];
-        $password = $_SERVER['PHP_AUTH_PW'];
-
-        if (!isset($username) || !isset($password)) {
-            list($username, $password) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-        }
-
         // validate username and password
-        if (!isset($username) || !isset($password)) {
+        if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
             if ($isTestNotification) {
                 $message = 'Authentication failed: PHP_AUTH_USER or PHP_AUTH_PW are empty.';
                 throw new AuthenticationException($message);
@@ -106,8 +97,8 @@ class NotificationReceiver
             return false;
         }
 
-        $usernameIsValid = hash_equals($notificationUsername, $username);
-        $passwordIsValid = hash_equals($notificationPassword, $password);
+        $usernameIsValid = hash_equals($notificationUsername, $_SERVER['PHP_AUTH_USER']);
+        $passwordIsValid = hash_equals($notificationPassword, $_SERVER['PHP_AUTH_PW']);
         if ($usernameIsValid && $passwordIsValid) {
             return true;
         }
