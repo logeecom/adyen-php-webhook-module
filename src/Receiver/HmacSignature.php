@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 /**
  *                       ######
  *                       ######
@@ -29,6 +30,99 @@ use Adyen\Webhook\Exception\InvalidDataException;
 class HmacSignature
 {
     const EVENT_CODE = "eventCode";
+    const SUPPORTED_EVENT_CODES = array(
+        "ADVICE_OF_DEBIT",
+        "AUTHORISATION",
+        "AUTHORISATION_PENDING",
+        "AUTHORISE_REFERRAL",
+        "CANCELLATION",
+        "CANCEL_OR_REFUND",
+        "CAPTURE",
+        "CAPTURE_FAILED",
+        "CAPTURE_WITH_EXTERNAL_AUTH",
+        "CHARGEBACK",
+        "CHARGEBACK_REVERSED",
+        "DEACTIVATE_RECURRING",
+        "FRAUD_ONLY",
+        "FUND_TRANSFER",
+        "HANDLED_EXTERNALLY",
+        "MANUAL_REVIEW_ACCEPT",
+        "NOTIFICATION_OF_CHARGEBACK",
+        "NOTIFICATION_OF_FRAUD",
+        "OFFER_CLOSED",
+        "ORDER_OPENED",
+        "PAIDOUT_REVERSED",
+        "PAYOUT_DECLINE",
+        "PAYOUT_EXPIRE",
+        "PAYOUT_THIRDPARTY",
+        "PREARBITRATION_LOST",
+        "PREARBITRATION_WON",
+        "PROCESS_RETRY",
+        "RECURRING_CONTRACT",
+        "REFUND",
+        "REFUNDED_REVERSED",
+        "REFUND_FAILED",
+        "REFUND_WITH_DATA",
+        "REQUEST_FOR_INFORMATION",
+        "SECOND_CHARGEBACK",
+        "SUBMIT_RECURRING",
+        "VOID_PENDING_REFUND",
+        "POSTPONED_REFUND",
+        "TECHNICAL_CANCEL",
+        "AUTHORISATION_ADJUSTMENT",
+        "CANCEL_AUTORESCUE",
+        "AUTORESCUE"
+    );
+    private const EDITABLE_EVENT_CODES = array(
+        "ADVICE_OF_DEBIT",
+        "AUTHORISATION",
+        "CANCELLATION",
+        "CANCEL_OR_REFUND",
+        "CAPTURE",
+        "CAPTURE_FAILED",
+        "CHARGEBACK",
+        "CHARGEBACK_REVERSED",
+        "HANDLED_EXTERNALLY",
+        "MANUAL_REVIEW_ACCEPT",
+        "NOTIFICATION_OF_CHARGEBACK",
+        "NOTIFICATION_OF_FRAUD",
+        "OFFER_CLOSED",
+        "ORDER_OPENED",
+        "PAIDOUT_REVERSED",
+        "PAYOUT_DECLINE",
+        "PAYOUT_EXPIRE",
+        "PAYOUT_THIRDPARTY",
+        "PREARBITRATION_LOST",
+        "PREARBITRATION_WON",
+        "RECURRING_CONTRACT",
+        "REFUND",
+        "REFUNDED_REVERSED",
+        "REFUND_FAILED",
+        "REFUND_WITH_DATA",
+        "REQUEST_FOR_INFORMATION",
+        "SECOND_CHARGEBACK",
+        "VOID_PENDING_REFUND",
+        "POSTPONED_REFUND",
+        "TECHNICAL_CANCEL",
+        "AUTHORISATION_ADJUSTMENT",
+        "CANCEL_AUTORESCUE",
+        "AUTORESCUE",
+        "AUTHENTICATION",
+        "AUTORESCUE_NEXT_ATTEMPT",
+        "DISABLE_RECURRING",
+        "DISPUTE_DEFENSE_PERIOD_ENDED",
+        "DISPUTE_OPENED_WITH_CHARGEBACK",
+        "DONATION",
+        "EXPIRE",
+        "INFORMATION_SUPPLIED",
+        "ISSUER_COMMENTS",
+        "ISSUER_RESPONSE_TIMEFRAME_EXPIRED",
+        "MANUAL_REVIEW_REJECT",
+        "ORDER_CLOSED",
+        "PENDING",
+        "REPORT_AVAILABLE"
+    );
+
     /**
      * @param string $hmacKey Can be found in Customer Area
      * @param array $params The response from Adyen
@@ -105,6 +199,7 @@ class HmacSignature
 
         return $expectedSign == $merchantSign;
     }
+
     /**
      * Returns true when the event code support HMAC validation
      *
@@ -112,52 +207,23 @@ class HmacSignature
      */
     public function isHmacSupportedEventCode($response)
     {
-        $eventCodes =  array(
-            "ADVICE_OF_DEBIT",
-            "AUTHORISATION",
-            "AUTHORISATION_PENDING",
-            "AUTHORISE_REFERRAL",
-            "CANCELLATION",
-            "CANCEL_OR_REFUND",
-            "CAPTURE",
-            "CAPTURE_FAILED",
-            "CAPTURE_WITH_EXTERNAL_AUTH",
-            "CHARGEBACK",
-            "CHARGEBACK_REVERSED",
-            "DEACTIVATE_RECURRING",
-            "FRAUD_ONLY",
-            "FUND_TRANSFER",
-            "HANDLED_EXTERNALLY",
-            "MANUAL_REVIEW_ACCEPT",
-            "NOTIFICATION_OF_CHARGEBACK",
-            "NOTIFICATION_OF_FRAUD",
-            "OFFER_CLOSED",
-            "ORDER_OPENED",
-            "PAIDOUT_REVERSED",
-            "PAYOUT_DECLINE",
-            "PAYOUT_EXPIRE",
-            "PAYOUT_THIRDPARTY",
-            "PREARBITRATION_LOST",
-            "PREARBITRATION_WON",
-            "PROCESS_RETRY",
-            "RECURRING_CONTRACT",
-            "REFUND",
-            "REFUNDED_REVERSED",
-            "REFUND_FAILED",
-            "REFUND_WITH_DATA",
-            "REQUEST_FOR_INFORMATION",
-            "SECOND_CHARGEBACK",
-            "SUBMIT_RECURRING",
-            "VOID_PENDING_REFUND",
-            "POSTPONED_REFUND",
-            "TECHNICAL_CANCEL",
-            "AUTHORISATION_ADJUSTMENT",
-            "CANCEL_AUTORESCUE",
-            "AUTORESCUE"
-        );
-        if (array_key_exists(self::EVENT_CODE, $response) && in_array($response[self::EVENT_CODE], $eventCodes)) {
+        if (array_key_exists(self::EVENT_CODE, $response) && in_array(
+                $response[self::EVENT_CODE],
+                self::SUPPORTED_EVENT_CODES
+            )) {
             return true;
         }
+
         return false;
+    }
+
+    /**
+     * Returns event codes that are editable and supported by Adyen plugins.
+     *
+     * @return array
+     */
+    public static function getEditableSupportedEventCodes(): array
+    {
+        return array_values(array_intersect(self::SUPPORTED_EVENT_CODES, self::EDITABLE_EVENT_CODES));
     }
 }
