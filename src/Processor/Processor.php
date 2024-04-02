@@ -26,6 +26,7 @@ namespace Adyen\Webhook\Processor;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
+use ReflectionClass;
 
 abstract class Processor implements ProcessorInterface
 {
@@ -70,7 +71,7 @@ abstract class Processor implements ProcessorInterface
      */
     protected function validateState($state)
     {
-        $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
+        $paymentStatesClass = new ReflectionClass(PaymentStates::class);
         if (!in_array($state, $paymentStatesClass->getConstants())) {
             throw new InvalidDataException('Invalid state.');
         }

@@ -63,6 +63,7 @@ class ProcessorFactory
      * @param bool $isAutoCapture
      *
      * @return ProcessorInterface
+     *
      * @throws InvalidDataException
      */
     public static function create(
