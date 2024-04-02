@@ -42,6 +42,11 @@ abstract class Processor implements ProcessorInterface
 
     abstract public function process(): ?string;
 
+    /**
+     * @param Notification $notification
+     * @param string $state
+     * @throws InvalidDataException
+     */
     public function __construct(Notification $notification, string $state)
     {
         $this->notification = $notification;
@@ -50,6 +55,9 @@ abstract class Processor implements ProcessorInterface
         $this->initialState = $state;
     }
 
+    /**
+     * @throws InvalidDataException
+     */
     protected function validateState($state)
     {
         $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
@@ -61,10 +69,9 @@ abstract class Processor implements ProcessorInterface
     /**
      * In case of unchanged payment state based on notification log
      * the eventCode, originalState and newState
-     * @param string $eventCode
      * @return string
      */
-    protected function unchanged(string $eventCode): string
+    protected function unchanged(): string
     {
         return $this->initialState;
     }

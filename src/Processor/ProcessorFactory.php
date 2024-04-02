@@ -23,8 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Service\ResourceModel\Modification\CancelOrRefund;
-use Adyen\Service\ResourceModel\Modification\Capture;
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\Notification;
 
@@ -66,11 +64,8 @@ class ProcessorFactory
         Notification    $notification,
         string          $paymentState
     ): ProcessorInterface {
-        /** @var Processor $processor */
-        $processor = array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
+        return array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
             ? new self::$adyenEventCodeProcessors[$notification->getEventCode()]($notification, $paymentState)
             : new DefaultProcessor($notification, $paymentState);
-
-        return $processor;
     }
 }

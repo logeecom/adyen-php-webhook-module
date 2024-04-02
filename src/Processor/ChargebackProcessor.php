@@ -37,6 +37,7 @@ class ChargebackProcessor extends Processor implements ProcessorInterface
         )) {
             $state = $this->notification->isSuccess() ? PaymentStates::CHARGE_BACK : PaymentStates::STATE_FAILED;
         }
+
         return $state;
     }
 }
