@@ -51,7 +51,7 @@ abstract class AbstractDisputeNotificationProcessor extends Processor implements
             isset($disputeStatus) &&
             in_array($disputeStatus, self::FINAL_DISPUTE_STATUSES) &&
             in_array($state, self::CHARGEBACK_ORDER_STATES)) {
-            $state = PaymentStates::STATE_REFUNDED;
+            $state = PaymentStates::CHARGE_BACK;
         }
 
         return $state;
