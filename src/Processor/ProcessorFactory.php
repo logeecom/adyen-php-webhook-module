@@ -29,7 +29,7 @@ use Adyen\Webhook\Notification;
 
 class ProcessorFactory
 {
-    private static array $adyenEventCodeProcessors = [
+    private static $adyenEventCodeProcessors = [
         EventCodes::AUTHORISATION => AuthorisationProcessor::class,
         EventCodes::OFFER_CLOSED => OfferClosedProcessor::class,
         EventCodes::REFUND => RefundProcessor::class,
