@@ -71,7 +71,8 @@ class HmacSignature
         "TECHNICAL_CANCEL",
         "AUTHORISATION_ADJUSTMENT",
         "CANCEL_AUTORESCUE",
-        "AUTORESCUE"
+        "AUTORESCUE",
+        "ORDER_CLOSED",
     );
     private const EDITABLE_EVENT_CODES = array(
         "ADVICE_OF_DEBIT",
